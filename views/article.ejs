@@ -1,0 +1,56 @@
+<%- include header %>
+<p>
+    <% if (user && (user.name == post.name)) { %>
+    <span><a class="edit" href="/edit/<%= post.name %>/<%= post.time.day %>/<%= post.title %>">edit</a></span>
+    <span><a class="edit" href="/remove/<%= post.name %>/<%= post.time.day %>/<%= post.title %>">delete</a></span>
+    <% } %>
+
+    <% var flag = 1 %>
+    <% if (user && (user.name != post.name)) { %>
+    <% if ((post.reprint_info.reprint_from != undefined) && (user.name == post.reprint_info.reprint_from.name)) { %>
+    <% flag = 0 %>
+    <% } %>
+    <% if ((post.reprint_info.reprint_to != undefined)) { %>
+    <% post.reprint_info.reprint_to.forEach(function (reprint_to, index) { %>
+    <% if (user.name == reprint_to.name) { %>
+    <% flag = 0 %>
+    <% } %>
+    <% }) %>
+    <% } %>
+    <% } else { %>
+    <% flag = 0 %>
+    <% } %>
+    <% if (flag) { %>
+    <span><a class="edit" href="/reprint/<%= post.name %>/<%= post.time.day %>/<%= post.title %>">repost</a></span>
+    <% } %>
+
+</p>
+<p class="info">
+    <% if (post.reprint_info.reprint_from) { %>
+    <br><a href="/u/<%= post.reprint_info.reprint_from.name %>/<%= post.reprint_info.reprint_from.day %>/<%= post.reprint_info.reprint_from.title %>">原文链接</a>
+    <% } %>
+
+    write：<a href="/u/<%= post.name %>"><%= post.name %></a> |
+    date：<%= post.time.minute %> |
+    tag：
+    <% post.tags.forEach(function (tag, index) { %>
+    <% if (tag) { %>
+    <a class="tag" href="/tags/<%= tag %>"><%= tag %></a>
+    <% } %>
+    <% }) %>
+</p>
+
+<p><%- post.post %></p>
+<p class="info">
+    read：<%= post.pv %> |
+    comment：<%= post.comments.length %> |
+    repost：
+    <% if (post.reprint_info.reprint_to) { %>
+    <%= post.reprint_info.reprint_to.length %>
+    <% } else { %>
+    <%= 0 %>
+    <% } %>
+</p>
+
+<%- include comment %>
+<%- include footer %>>

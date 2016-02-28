@@ -1,0 +1,34 @@
+<%- include header %>
+<% posts.forEach(function (post, index) { %>
+<p><h2><a href="u/<%= post.name %>/<%= post.time.day %>/<%= post.title %>"><%= post.title %></a>
+    <a href="/u/<%= post.name %>"><img src="<%= post.head %>" class="r_head" /></a>
+</h2></p>
+<p class="info">
+    <% if (post.reprint_info.reprint_from) { %>
+    <br><a href="/u/<%= post.reprint_info.reprint_from.name %>/<%= post.reprint_info.reprint_from.day %>/<%= post.reprint_info.reprint_from.title %>">原文链接</a>
+    <% } %>
+
+    write：<a href="/u/<%= post.name %>"><%= post.name %></a> |
+    date：<%= post.time.minute %> |
+    tag：
+    <% post.tags.forEach(function (tag, index) { %>
+    <% if (tag) { %>
+    <a class="tag" href="/tags/<%= tag %>"><%= tag %></a>
+    <% } %>
+    <% }) %>
+</p>
+<p><%- post.post %></p>
+<p class="info">
+    read：<%= post.pv %> |
+    comment：<%= post.comments.length %> |
+    post：
+    <% if (post.reprint_info.reprint_to) { %>
+    <%= post.reprint_info.reprint_to.length %>
+    <% } else { %>
+    <%= 0 %>
+    <% } %>
+</p>
+
+<% }) %>
+<%- include paging %>
+<%- include footer %>
