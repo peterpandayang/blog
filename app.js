@@ -11,7 +11,6 @@ var flash = require('connect-flash');
 var multer = require('multer');
 var routes = require('./routes/index');
 var fs = require('fs');
-var mongoose = require('mongoose');
 var accessLog = fs.createWriteStream('access.log', {flags: 'a'});
 var errorLog = fs.createWriteStream('error.log', {flags: 'a'});
 var app = express();
@@ -19,14 +18,6 @@ var app = express();
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-mongoose.connect(settings.url, function(err){
-    if(err){
-        console.log(err);
-    } else {
-        console.log('Connected to the database');
-    }
-})
 
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
@@ -40,13 +31,12 @@ app.use(function (err, req, res, next) {
     errorLog.write(meta + err.stack + '\n');
     next();
 });
-
 app.use(session({
     secret: settings.cookieSecret,
+    key: settings.db,//cookie name
     cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30 days
-    url: settings.url
+    store: new MongoStore({ /*db: settings.db, host: settings.host, port: settings.port*/ url: 'mongodb://localhost/blog' })
 }));
-
 
 app.use(flash());
 
